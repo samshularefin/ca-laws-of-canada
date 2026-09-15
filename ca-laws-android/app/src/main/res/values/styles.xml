@@ -4,10 +4,37 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/screenBackground</item>
+        <item name="android:statusBarColor">@color/primaryDark</item>
     </style>
 
     <style name="Theme.CaLaws.Splash" parent="Theme.CaLaws">
         <item name="android:windowBackground">@color/splashBackground</item>
+        <item name="android:statusBarColor">@color/splashBackground</item>
+    </style>
+
+    <style name="Widget.CaLaws.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:background">@color/primary</item>
+        <item name="tabIndicatorColor">@color/accent</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabTextColor">@color/tabUnselected</item>
+        <item name="tabTextAppearance">@style/TextAppearance.CaLaws.Tab</item>
+        <item name="tabRippleColor">@color/rippleLight</item>
+    </style>
+
+    <style name="TextAppearance.CaLaws.Tab" parent="TextAppearance.MaterialComponents.Button">
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Widget.CaLaws.SectionLabel" parent="">
+        <item name="android:background">@drawable/bg_section_label</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:paddingVertical">3dp</item>
+        <item name="android:gravity">center</item>
     </style>
 </resources>

@@ -10,16 +10,17 @@
         android:id="@+id/headerTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="21sp"
         android:textStyle="bold"
-        android:textColor="@color/textPrimary" />
+        android:lineSpacingMultiplier="1.15"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/headerMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="13sp"
-        android:textColor="@color/textSecondary"
-        android:layout_marginTop="8dp" />
+        android:textColor="@color/headerTextMuted"
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

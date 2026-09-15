@@ -2,13 +2,24 @@
 <resources>
     <color name="primary">#1A3C6E</color>
     <color name="primaryDark">#122A4E</color>
+    <color name="primaryLight">#2B4F85</color>
     <color name="accent">#C8102E</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="screenBackground">#F4F6F9</color>
+    <color name="cardBackground">#FFFFFF</color>
 
     <color name="splashBackground">#1A3C6E</color>
     <color name="splashText">#FFFFFF</color>
+    <color name="splashTextMuted">#B7C4DA</color>
 
-    <color name="headerBackground">#F2F4F7</color>
+    <color name="headerBackground">#1A3C6E</color>
+    <color name="headerTextMuted">#B7C4DA</color>
     <color name="textPrimary">#1B1F24</color>
     <color name="textSecondary">#5B6470</color>
     <color name="divider">#E1E4E8</color>
+
+    <color name="tabUnselected">#B3FFFFFF</color>
+    <color name="chipBackground">#EAF0F9</color>
+    <color name="rippleLight">#1F1A3C6E</color>
 </resources>
