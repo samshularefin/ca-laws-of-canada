@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Laws of Canada</string>
+    <string name="loading">Loading…</string>
+    <string name="downloading_database">Downloading legal database…</string>
+    <string name="download_failed">Download failed: %1$s</string>
+
+    <string name="tab_acts">Acts</string>
+    <string name="tab_regulations">Regulations</string>
+
+    <string name="search_hint">Search laws or sections…</string>
+    <string name="search_by_title">By Title</string>
+    <string name="search_full_text">Full Text</string>
+
+    <string name="document_subtitle">%1$s • %2$d sections</string>
+    <string name="document_meta">%1$s • Current to %2$s</string>
+
+    <string name="action_search">Search</string>
+</resources>

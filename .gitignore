@@ -1,0 +1,19 @@
+# Android
+ca-laws-android/.gradle/
+ca-laws-android/.idea/
+ca-laws-android/local.properties
+ca-laws-android/app/build/
+ca-laws-android/build/
+ca-laws-android/*.iml
+ca-laws-android/captures/
+
+# Node
+ca-laws-backend/**/node_modules/
+
+# Archives / large data files (hosted as GitHub Release assets instead)
+*.tar.gz
+files.zip
+ca_laws.db
+ca_laws.db.gz
+ca_laws.db/
+version.txt

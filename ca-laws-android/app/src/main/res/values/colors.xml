@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1A3C6E</color>
+    <color name="primaryDark">#122A4E</color>
+    <color name="accent">#C8102E</color>
+
+    <color name="splashBackground">#1A3C6E</color>
+    <color name="splashText">#FFFFFF</color>
+
+    <color name="headerBackground">#F2F4F7</color>
+    <color name="textPrimary">#1B1F24</color>
+    <color name="textSecondary">#5B6470</color>
+    <color name="divider">#E1E4E8</color>
+</resources>
