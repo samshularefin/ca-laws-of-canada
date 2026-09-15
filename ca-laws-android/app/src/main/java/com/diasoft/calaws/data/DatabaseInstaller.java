@@ -26,9 +26,10 @@ public class DatabaseInstaller {
     private static final String KEY_DB_VERSION = "db_version";
     private static final String DB_FILENAME = "ca_laws.db";
 
-    // Replace with your actual static hosting URL (e.g. Cloudflare R2 / GitHub Releases asset).
-    private static final String DB_URL = "https://cdn.example.com/ca-laws/ca_laws.db.gz";
-    private static final String VERSION_URL = "https://cdn.example.com/ca-laws/version.txt";
+    // "latest" always redirects to the most recent release's asset, so future
+    // updates just need a new release — no app-side URL change required.
+    private static final String DB_URL = "https://github.com/samshularefin/ca-laws-of-canada/releases/latest/download/ca_laws.db.gz";
+    private static final String VERSION_URL = "https://github.com/samshularefin/ca-laws-of-canada/releases/latest/download/version.txt";
 
     public interface ProgressListener {
         void onProgress(int percent);
