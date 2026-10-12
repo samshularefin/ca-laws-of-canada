@@ -67,6 +67,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sh.heading.setVisibility(s.headingPath == null || s.headingPath.isEmpty()
                     ? View.GONE : View.VISIBLE);
             sh.label.setText(s.label);
+            sh.label.setVisibility(s.label == null || s.label.isEmpty() ? View.GONE : View.VISIBLE);
             sh.marginalNote.setText(s.marginalNote);
             sh.marginalNote.setVisibility(s.marginalNote == null || s.marginalNote.isEmpty()
                     ? View.GONE : View.VISIBLE);

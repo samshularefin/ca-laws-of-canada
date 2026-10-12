@@ -102,6 +102,30 @@ function walkOrderedBody(bodyArr, sections, headingStack) {
   }
 }
 
+// Orders, proclamations and similar instruments keep their text in <Order><Provision>
+// rather than <Body><Section>; each top-level Provision becomes one section.
+function walkOrder(orderArr, sections) {
+  if (!Array.isArray(orderArr)) return;
+  const headingStack = [];
+  for (const entry of orderArr) {
+    if (entry.Heading !== undefined) {
+      const level = Number((entry[':@'] || {})['@_level'] || '1');
+      const titleText = clean(extractOrderedText(findChild(entry.Heading, 'TitleText')));
+      while (headingStack.length && headingStack[headingStack.length - 1].level >= level) headingStack.pop();
+      headingStack.push({ level, text: titleText });
+    } else if (entry.Provision !== undefined) {
+      const text = clean(extractOrderedText(entry.Provision));
+      if (!text) continue;
+      sections.push({
+        label: clean(extractOrderedText(findChild(entry.Provision, 'Label'))),
+        marginal_note: '',
+        heading_path: headingStack.map(h => h.text).join(' > '),
+        text,
+      });
+    }
+  }
+}
+
 function parseActFile(filePath) {
   const xml = fs.readFileSync(filePath, 'utf-8');
 
@@ -126,6 +150,7 @@ function parseActFile(filePath) {
 
   const sections = [];
   walkOrderedBody(bodyArr, sections, []);
+  if (sections.length === 0) walkOrder(findChild(rootArr, 'Order'), sections);
 
   return {
     id: path.basename(filePath, '.xml'),

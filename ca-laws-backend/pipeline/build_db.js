@@ -60,7 +60,7 @@ const insertSectionFts = db.prepare(`INSERT INTO sections_fts (doc_id, seq, marg
 
 function processDir(dirPath) {
   const files = fs.readdirSync(dirPath).filter(f => f.endsWith('.xml'));
-  let ok = 0, failed = 0;
+  let ok = 0, failed = 0, skippedEmpty = 0;
   const txn = db.transaction((batch) => {
     for (const { parsed, rowid } of batch) {
       insertDoc.run({
@@ -89,6 +89,7 @@ function processDir(dirPath) {
     try {
       const parsed = parseActFile(filePath);
       if (!parsed || !parsed.short_title) { failed++; continue; }
+      if (parsed.section_count === 0) { skippedEmpty++; continue; }
       batch.push({ parsed, rowid: rowid++ });
       ok++;
       if (batch.length >= 200) { txn(batch); batch = []; }
@@ -98,7 +99,7 @@ function processDir(dirPath) {
     }
   }
   if (batch.length) txn(batch);
-  return { ok, failed, total: files.length };
+  return { ok, failed, skippedEmpty, total: files.length };
 }
 
 console.log(`Building DB (${LANG}) -> ${OUT_DB}`);
