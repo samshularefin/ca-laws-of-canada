@@ -32,7 +32,7 @@ public class DatabaseInstaller {
     private static final String VERSION_URL = "https://github.com/samshularefin/ca-laws-of-canada/releases/latest/download/version.txt";
 
     public interface ProgressListener {
-        void onProgress(int percent);
+        void onProgress(int percent, long downloadedBytes, long totalBytes);
         void onComplete(File dbFile);
         void onError(Exception e);
     }
@@ -80,23 +80,27 @@ public class DatabaseInstaller {
             conn.setReadTimeout(30000);
             int contentLength = conn.getContentLength();
 
-            try (InputStream rawIn = conn.getInputStream();
+            final long[] downloaded = {0};
+            try (InputStream rawIn = new java.io.FilterInputStream(conn.getInputStream()) {
+                     @Override public int read(byte[] b, int off, int len) throws IOException {
+                         int n = super.read(b, off, len);
+                         if (n > 0) downloaded[0] += n;
+                         return n;
+                     }
+                 };
                  GZIPInputStream gzIn = new GZIPInputStream(rawIn);
                  FileOutputStream out = new FileOutputStream(tmpFile)) {
 
                 byte[] buffer = new byte[64 * 1024];
-                long totalRead = 0;
                 int read;
                 int lastPercent = -1;
                 while ((read = gzIn.read(buffer)) != -1) {
                     out.write(buffer, 0, read);
-                    totalRead += read;
-                    if (contentLength > 0) {
-                        // Note: contentLength is the *compressed* size; this is an approximation.
-                        int percent = (int) Math.min(99, (totalRead * 100) / (contentLength * 4L));
-                        if (percent != lastPercent && listener != null) {
+                    if (contentLength > 0 && listener != null) {
+                        int percent = (int) Math.min(99, (downloaded[0] * 100) / contentLength);
+                        if (percent != lastPercent) {
                             lastPercent = percent;
-                            listener.onProgress(percent);
+                            listener.onProgress(percent, downloaded[0], contentLength);
                         }
                     }
                 }

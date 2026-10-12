@@ -4,6 +4,10 @@
     <string name="app_tagline">Federal Acts &amp; Regulations</string>
     <string name="loading">Loading…</string>
     <string name="downloading_database">Downloading legal database…</string>
+    <string name="download_progress">Downloading legal database… %1$d%% (%2$.1f / %3$.1f MB)</string>
+    <string name="download_channel">Database download</string>
+    <string name="download_complete">Download complete — tap to open</string>
+    <string name="download_failed_short">Download failed — tap to retry</string>
     <string name="download_failed">Download failed: %1$s</string>
 
     <string name="tab_acts">Acts</string>

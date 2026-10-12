@@ -1,20 +1,45 @@
 package com.diasoft.calaws.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.diasoft.calaws.R;
 import com.diasoft.calaws.data.DatabaseInstaller;
+import com.diasoft.calaws.data.DownloadService;
 
 public class SplashActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private TextView statusText;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private boolean navigated;
+
+    private final DownloadService.Listener serviceListener = new DownloadService.Listener() {
+        @Override
+        public void onProgress(int percent, long downloadedBytes, long totalBytes) {
+            mainHandler.post(() -> showProgress(percent, downloadedBytes, totalBytes));
+        }
+
+        @Override
+        public void onComplete() {
+            mainHandler.post(SplashActivity.this::goToMain);
+        }
+
+        @Override
+        public void onError(String message) {
+            mainHandler.post(() -> showError(message));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,39 +54,58 @@ public class SplashActivity extends AppCompatActivity {
             goToMain();
             checkForUpdateInBackground();
         } else {
-            progressBar.setVisibility(android.view.View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
             statusText.setText(R.string.downloading_database);
-            downloadDatabase();
+            if (Build.VERSION.SDK_INT >= 33
+                    && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+            startDownload();
         }
     }
 
-    private void downloadDatabase() {
-        new Thread(() -> {
-            String remoteVersion = null;
-            try {
-                remoteVersion = DatabaseInstaller.fetchRemoteVersion();
-            } catch (Exception ignored) {
-                // Proceed without version tracking if the version endpoint is unreachable.
-            }
-            final String finalVersion = remoteVersion;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (navigated) return;
+        DownloadService.setListener(serviceListener);
+        // Catch up with anything that happened while this screen was not visible.
+        if (DatabaseInstaller.isInstalled(this) && !DownloadService.running) {
+            goToMain();
+        } else if (DownloadService.error != null) {
+            showError(DownloadService.error);
+        } else if (DownloadService.running && DownloadService.total > 0) {
+            showProgress(DownloadService.percent, DownloadService.downloaded, DownloadService.total);
+        }
+    }
 
-            DatabaseInstaller.installOrUpdate(this, finalVersion, new DatabaseInstaller.ProgressListener() {
-                @Override
-                public void onProgress(int percent) {
-                    mainHandler.post(() -> progressBar.setProgress(percent));
-                }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DownloadService.setListener(null);
+    }
 
-                @Override
-                public void onComplete(java.io.File dbFile) {
-                    mainHandler.post(SplashActivity.this::goToMain);
-                }
+    private void startDownload() {
+        if (!DownloadService.running) {
+            ContextCompat.startForegroundService(this, new Intent(this, DownloadService.class));
+        }
+    }
 
-                @Override
-                public void onError(Exception e) {
-                    mainHandler.post(() -> statusText.setText(getString(R.string.download_failed, e.getMessage())));
-                }
-            });
-        }).start();
+    private void showProgress(int percent, long downloadedBytes, long totalBytes) {
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setProgress(percent);
+        statusText.setOnClickListener(null);
+        statusText.setText(getString(R.string.download_progress, percent,
+                downloadedBytes / 1048576f, totalBytes / 1048576f));
+    }
+
+    private void showError(String message) {
+        statusText.setText(getString(R.string.download_failed, message));
+        statusText.setOnClickListener(v -> {
+            statusText.setOnClickListener(null);
+            statusText.setText(R.string.downloading_database);
+            startDownload();
+        });
     }
 
     private void checkForUpdateInBackground() {
@@ -80,6 +124,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
+        if (navigated) return;
+        navigated = true;
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
