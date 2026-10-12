@@ -16,6 +16,7 @@
     <string name="tab_regulations">Regulations</string>
 
     <string name="search_hint">Search laws or sections…</string>
+    <string name="search_unavailable">Search is updating. Try again in a minute.</string>
     <string name="search_by_title">By Title</string>
     <string name="search_full_text">Full Text</string>
 

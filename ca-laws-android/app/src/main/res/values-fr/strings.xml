@@ -14,6 +14,7 @@
     <string name="tab_regulations">Règlements</string>
 
     <string name="search_hint">Rechercher une loi ou un article…</string>
+    <string name="search_unavailable">La recherche est en cours de mise à jour. Réessayez dans une minute.</string>
     <string name="search_by_title">Par titre</string>
     <string name="search_full_text">Texte intégral</string>
 

@@ -69,11 +69,21 @@ public class LawsDbHelper {
         String ftsQuery = buildFtsQuery(query);
         if (ftsQuery == null) return results;
 
+        // Laws whose own name contains every word come first (so "Criminal Code" beats a law that only
+        // mentions it in its long title), then shorter names first.
+        List<String> args = new ArrayList<>();
+        args.add(ftsQuery);
+        StringBuilder inName = new StringBuilder();
+        for (String t : words(query)) {
+            if (inName.length() > 0) inName.append(" AND ");
+            inName.append("d.short_title LIKE ?");
+            args.add("%" + t + "%");
+        }
         String sql = "SELECT d.id, d.type, d.consolidated_number, d.short_title, d.long_title, d.section_count " +
                 "FROM documents_fts f JOIN documents d ON d.id = f.id " +
-                "WHERE documents_fts MATCH ? ORDER BY rank LIMIT 40";
+                "WHERE documents_fts MATCH ? ORDER BY (" + inName + ") DESC, length(d.short_title) LIMIT 40";
 
-        try (Cursor c = db.rawQuery(sql, new String[]{ftsQuery})) {
+        try (Cursor c = db.rawQuery(sql, args.toArray(new String[0]))) {
             while (c.moveToNext()) {
                 results.add(DocumentSummary.fromCursor(c));
             }
@@ -86,11 +96,11 @@ public class LawsDbHelper {
         String ftsQuery = buildFtsQuery(query);
         if (ftsQuery == null) return results;
 
-        String sql = "SELECT s.doc_id, s.seq, s.marginal_note, " +
-                "snippet(sections_fts, 3, '[', ']', '...', 20) as snippet, " +
+        String sql = "SELECT sections_fts.doc_id, sections_fts.seq, sections_fts.marginal_note, " +
+                "snippet(sections_fts, '[', ']', '...', 3, 20) AS snippet, " +
                 "d.short_title, d.type " +
-                "FROM sections_fts s JOIN documents d ON d.id = s.doc_id " +
-                "WHERE sections_fts MATCH ? ORDER BY rank LIMIT 50";
+                "FROM sections_fts JOIN documents d ON d.id = sections_fts.doc_id " +
+                "WHERE sections_fts MATCH ? LIMIT 50";
 
         try (Cursor c = db.rawQuery(sql, new String[]{ftsQuery})) {
             while (c.moveToNext()) {
@@ -100,17 +110,26 @@ public class LawsDbHelper {
         return results;
     }
 
-    /** Wraps user input into a safe FTS5 MATCH expression with prefix matching on the last token. */
+    /**
+     * Turns user input into a safe FTS4 MATCH expression: only letters and digits survive (so no
+     * operator or quote can break the syntax), and each word is a quoted prefix term, all required.
+     */
     private String buildFtsQuery(String raw) {
-        if (raw == null) return null;
-        String cleaned = raw.replace("\"", " ").trim();
-        if (cleaned.isEmpty()) return null;
-        String[] tokens = cleaned.split("\\s+");
         StringBuilder sb = new StringBuilder();
-        for (String t : tokens) {
-            sb.append('"').append(t).append('"').append(' ');
+        for (String t : words(raw)) {
+            if (sb.length() > 0) sb.append(' ');
+            sb.append('"').append(t).append("*\"");
         }
-        return sb.toString().trim() + "*";
+        return sb.length() == 0 ? null : sb.toString();
+    }
+
+    private static List<String> words(String raw) {
+        List<String> out = new ArrayList<>();
+        if (raw == null) return out;
+        for (String t : raw.split("[^\\p{L}\\p{N}]+")) {
+            if (!t.isEmpty()) out.add(t);
+        }
+        return out;
     }
 
     // --- Simple data holders ---

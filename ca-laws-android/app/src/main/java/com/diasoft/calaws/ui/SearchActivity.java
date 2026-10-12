@@ -90,13 +90,20 @@ public class SearchActivity extends AppCompatActivity {
             adapter.setTextResults(new ArrayList<>());
             return;
         }
+        final boolean titles = searchingTitles;
         executor.execute(() -> {
-            if (searchingTitles) {
-                List<LawsDbHelper.DocumentSummary> results = dbHelper.searchTitles(query);
-                mainHandler.post(() -> adapter.setTitleResults(results));
-            } else {
-                List<LawsDbHelper.SectionSearchResult> results = dbHelper.searchText(query);
-                mainHandler.post(() -> adapter.setTextResults(results));
+            try {
+                if (titles) {
+                    List<LawsDbHelper.DocumentSummary> results = dbHelper.searchTitles(query);
+                    mainHandler.post(() -> adapter.setTitleResults(results));
+                } else {
+                    List<LawsDbHelper.SectionSearchResult> results = dbHelper.searchText(query);
+                    mainHandler.post(() -> adapter.setTextResults(results));
+                }
+            } catch (RuntimeException e) {
+                // e.g. an older database whose search index this device cannot read; it refreshes itself.
+                mainHandler.post(() -> android.widget.Toast.makeText(
+                        this, R.string.search_unavailable, android.widget.Toast.LENGTH_LONG).show());
             }
         });
     }

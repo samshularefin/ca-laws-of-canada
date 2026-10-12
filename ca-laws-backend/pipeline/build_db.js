@@ -36,12 +36,14 @@ CREATE TABLE sections (
   FOREIGN KEY (doc_id) REFERENCES documents(id)
 );
 
-CREATE VIRTUAL TABLE documents_fts USING fts5(
-  id UNINDEXED, short_title, long_title, content='documents', content_rowid='rowid'
+-- FTS4, not FTS5: Android's bundled SQLite often has no FTS5 module ("no such module: fts5").
+-- unicode61 folds case and accents, so "ecole" finds "école".
+CREATE VIRTUAL TABLE documents_fts USING fts4(
+  id, short_title, long_title, notindexed=id, tokenize=unicode61
 );
 
-CREATE VIRTUAL TABLE sections_fts USING fts5(
-  doc_id UNINDEXED, seq UNINDEXED, marginal_note, text
+CREATE VIRTUAL TABLE sections_fts USING fts4(
+  doc_id, seq, marginal_note, text, notindexed=doc_id, notindexed=seq, tokenize=unicode61
 );
 
 CREATE INDEX idx_sections_doc ON sections(doc_id);
@@ -51,7 +53,7 @@ const insertDoc = db.prepare(`
   INSERT INTO documents (id, type, consolidated_number, short_title, long_title, in_force_start, last_amended, current_to, section_count)
   VALUES (@id, @type, @consolidated_number, @short_title, @long_title, @in_force_start, @last_amended, @current_to, @section_count)
 `);
-const insertDocFts = db.prepare(`INSERT INTO documents_fts (rowid, id, short_title, long_title) VALUES (?, ?, ?, ?)`);
+const insertDocFts = db.prepare(`INSERT INTO documents_fts (id, short_title, long_title) VALUES (?, ?, ?)`);
 const insertSection = db.prepare(`
   INSERT INTO sections (doc_id, seq, label, marginal_note, heading_path, text)
   VALUES (@doc_id, @seq, @label, @marginal_note, @heading_path, @text)
@@ -62,7 +64,7 @@ function processDir(dirPath) {
   const files = fs.readdirSync(dirPath).filter(f => f.endsWith('.xml'));
   let ok = 0, failed = 0, skippedEmpty = 0;
   const txn = db.transaction((batch) => {
-    for (const { parsed, rowid } of batch) {
+    for (const { parsed } of batch) {
       insertDoc.run({
         id: parsed.id,
         type: parsed.type,
@@ -74,7 +76,7 @@ function processDir(dirPath) {
         current_to: parsed.current_to,
         section_count: parsed.section_count,
       });
-      insertDocFts.run(rowid, parsed.id, parsed.short_title, parsed.long_title);
+      insertDocFts.run(parsed.id, parsed.short_title, parsed.long_title);
       parsed.sections.forEach((s, i) => {
         insertSection.run({ doc_id: parsed.id, seq: i, label: s.label, marginal_note: s.marginal_note, heading_path: s.heading_path, text: s.text });
         insertSectionFts.run(parsed.id, i, s.marginal_note, s.text);
@@ -82,7 +84,6 @@ function processDir(dirPath) {
     }
   });
 
-  let rowid = 1;
   let batch = [];
   for (const file of files) {
     const filePath = path.join(dirPath, file);
@@ -90,7 +91,7 @@ function processDir(dirPath) {
       const parsed = parseActFile(filePath);
       if (!parsed || !parsed.short_title) { failed++; continue; }
       if (parsed.section_count === 0) { skippedEmpty++; continue; }
-      batch.push({ parsed, rowid: rowid++ });
+      batch.push({ parsed });
       ok++;
       if (batch.length >= 200) { txn(batch); batch = []; }
     } catch (e) {
@@ -113,6 +114,10 @@ console.log('Regulations:', regsRes);
 const totalDocs = db.prepare('SELECT COUNT(*) c FROM documents').get().c;
 const totalSections = db.prepare('SELECT COUNT(*) c FROM sections').get().c;
 console.log(`Done. ${totalDocs} documents, ${totalSections} sections.`);
+// Merge FTS segments, then ship a single self-contained file (no WAL side files).
+db.exec(`INSERT INTO documents_fts(documents_fts) VALUES('optimize'); INSERT INTO sections_fts(sections_fts) VALUES('optimize');`);
+db.pragma('journal_mode = DELETE');
+db.exec('VACUUM');
 console.log('DB size:', (fs.statSync(OUT_DB).size / (1024*1024)).toFixed(1), 'MB');
 
 db.close();
