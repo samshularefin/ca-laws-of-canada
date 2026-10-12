@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.adContainer, R.id.adView);
 
         recyclerView = findViewById(R.id.recyclerView);
         swipeRefresh = findViewById(R.id.swipeRefresh);

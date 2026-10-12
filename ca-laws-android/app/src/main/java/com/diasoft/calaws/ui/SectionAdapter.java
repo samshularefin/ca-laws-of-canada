@@ -1,9 +1,13 @@
 package com.diasoft.calaws.ui;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.diasoft.calaws.R;
@@ -71,8 +75,36 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sh.marginalNote.setText(s.marginalNote);
             sh.marginalNote.setVisibility(s.marginalNote == null || s.marginalNote.isEmpty()
                     ? View.GONE : View.VISIBLE);
-            sh.text.setText(s.text);
+            sh.text.setText(bodyText(s));
+            sh.copy.setOnClickListener(v -> copySection(v.getContext(), s));
         }
+    }
+
+    /** Section text as stored begins with the marginal note and label again; drop that duplicate prefix. */
+    private static String bodyText(LawsDbHelper.Section s) {
+        String t = s.text == null ? "" : s.text;
+        for (int i = 0; i < 2; i++) {
+            if (s.marginalNote != null && !s.marginalNote.isEmpty() && t.startsWith(s.marginalNote)) {
+                t = t.substring(s.marginalNote.length()).trim();
+            } else if (s.label != null && !s.label.isEmpty() && t.startsWith(s.label)) {
+                t = t.substring(s.label.length()).trim();
+            }
+        }
+        return t.isEmpty() ? s.text : t;
+    }
+
+    private void copySection(Context context, LawsDbHelper.Section s) {
+        StringBuilder sb = new StringBuilder();
+        if (header != null && header.shortTitle != null) {
+            sb.append(header.shortTitle);
+            if (s.label != null && !s.label.isEmpty()) sb.append(", s. ").append(s.label);
+            if (s.marginalNote != null && !s.marginalNote.isEmpty()) sb.append(" — ").append(s.marginalNote);
+            sb.append('\n');
+        }
+        sb.append(bodyText(s));
+        ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setPrimaryClip(ClipData.newPlainText("law", sb.toString()));
+        Toast.makeText(context, R.string.section_copied, Toast.LENGTH_SHORT).show();
     }
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -86,8 +118,10 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     static class SectionViewHolder extends RecyclerView.ViewHolder {
         TextView heading, label, marginalNote, text;
+        View copy;
         SectionViewHolder(@NonNull View itemView) {
             super(itemView);
+            copy = itemView.findViewById(R.id.sectionCopy);
             heading = itemView.findViewById(R.id.sectionHeading);
             label = itemView.findViewById(R.id.sectionLabel);
             marginalNote = itemView.findViewById(R.id.sectionMarginalNote);

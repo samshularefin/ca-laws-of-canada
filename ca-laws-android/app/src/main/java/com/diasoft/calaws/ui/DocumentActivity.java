@@ -32,6 +32,7 @@ public class DocumentActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
+        com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.adContainer, R.id.adView);
 
         dbHelper = new LawsDbHelper(this);
         recyclerView = findViewById(R.id.sectionsRecyclerView);
