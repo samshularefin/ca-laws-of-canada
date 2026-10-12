@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="screenBackground">#0F141A</color>
+    <color name="cardBackground">#1A2129</color>
+    <color name="textPrimary">#E6E9ED</color>
+    <color name="textSecondary">#9AA5B1</color>
+    <color name="divider">#2A333D</color>
+    <color name="chipBackground">#223046</color>
+    <color name="rippleLight">#33FFFFFF</color>
+</resources>

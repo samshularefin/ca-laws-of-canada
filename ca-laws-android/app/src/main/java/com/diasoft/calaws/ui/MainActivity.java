@@ -69,6 +69,18 @@ public class MainActivity extends AppCompatActivity {
 
         swipeRefresh.setOnRefreshListener(this::resetAndLoad);
 
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(MainActivity.this)
+                        .setTitle(R.string.exit_title)
+                        .setMessage(R.string.exit_message)
+                        .setPositiveButton(R.string.exit, (d, w) -> finishAffinity())
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
+            }
+        });
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView rv, int dx, int dy) {
@@ -121,12 +133,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        android.view.MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchItem.setOnMenuItemClickListener(item -> {
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_search) {
             startActivity(new Intent(this, SearchActivity.class));
             return true;
-        });
-        return true;
+        } else if (id == R.id.action_library) {
+            startActivity(new Intent(this, LibraryActivity.class));
+            return true;
+        } else if (id == R.id.action_settings) {
+            SettingsDialog.show(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

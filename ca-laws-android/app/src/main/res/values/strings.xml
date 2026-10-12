@@ -7,12 +7,10 @@
     <string name="download_progress">Downloading legal database… %1$d%% (%2$.1f / %3$.1f MB)</string>
     <!-- Google's public test banner unit; replace with the real unit ID before release. -->
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="copy_section">Copy section</string>
-    <string name="section_copied">Section copied</string>
     <string name="download_channel">Database download</string>
     <string name="download_complete">Download complete — tap to open</string>
     <string name="download_failed_short">Download failed — tap to retry</string>
-    <string name="download_failed">Download failed: %1$s</string>
+    <string name="download_failed">Download failed: %1$s (tap to retry)</string>
 
     <string name="tab_acts">Acts</string>
     <string name="tab_regulations">Regulations</string>
@@ -25,4 +23,55 @@
     <string name="document_meta">%1$s • Current to %2$s</string>
 
     <string name="action_search">Search</string>
+    <string name="action_library">Saved &amp; history</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_find">Find in this law</string>
+    <string name="action_goto">Go to section</string>
+    <string name="action_bookmark">Save this law</string>
+
+    <string name="copy_section">Copy section</string>
+    <string name="share_section">Share section</string>
+    <string name="save_section">Save section</string>
+    <string name="section_copied">Section copied</string>
+    <string name="bookmark_added">Saved</string>
+    <string name="bookmark_removed">Removed from saved</string>
+
+    <string name="find_hint">Find in this law…</string>
+    <string name="find_none">No matches</string>
+    <string name="find_prev">Previous match</string>
+    <string name="find_next">Next match</string>
+    <string name="find_close">Close</string>
+
+    <string name="goto_title">Go to section</string>
+    <string name="goto_hint">Section number, e.g. 253</string>
+    <string name="goto_not_found">Section %1$s not found</string>
+    <string name="exit_title">Exit app?</string>
+    <string name="exit_message">Your saved laws and history stay on this device.</string>
+    <string name="exit">Exit</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="library_title">Saved &amp; history</string>
+    <string name="tab_saved">Saved</string>
+    <string name="tab_history">History</string>
+    <string name="empty_saved">Nothing saved yet. Tap the star on a law or a section.</string>
+    <string name="empty_history">No reading history yet.</string>
+    <string name="clear_history">Clear</string>
+    <string name="remove">Remove</string>
+    <string name="whole_law">Whole law</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_font">Text size</string>
+    <string name="font_small">Small</string>
+    <string name="font_normal">Normal</string>
+    <string name="font_large">Large</string>
+    <string name="font_xlarge">Extra large</string>
+    <string name="settings_theme">Theme</string>
+    <string name="theme_system">System default</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="settings_language">Language / Langue</string>
+    <string name="lang_en">English</string>
+    <string name="lang_fr">Français</string>
+    <string name="language_note">The first time you switch, that edition (about 80 MB) is downloaded.</string>
 </resources>

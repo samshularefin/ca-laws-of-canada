@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_font" />
+
+        <RadioGroup
+            android:id="@+id/fontGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton android:id="@+id/fontSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/font_small" />
+            <RadioButton android:id="@+id/fontNormal" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/font_normal" />
+            <RadioButton android:id="@+id/fontLarge" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/font_large" />
+            <RadioButton android:id="@+id/fontXLarge" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/font_xlarge" />
+        </RadioGroup>
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/settings_theme" />
+
+        <RadioGroup
+            android:id="@+id/themeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton android:id="@+id/themeSystem" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_system" />
+            <RadioButton android:id="@+id/themeLight" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_light" />
+            <RadioButton android:id="@+id/themeDark" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/theme_dark" />
+        </RadioGroup>
+
+        <TextView
+            style="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/settings_language" />
+
+        <RadioGroup
+            android:id="@+id/langGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton android:id="@+id/langEn" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/lang_en" />
+            <RadioButton android:id="@+id/langFr" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/lang_fr" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/language_note"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

@@ -103,9 +103,11 @@ function processDir(dirPath) {
 }
 
 console.log(`Building DB (${LANG}) -> ${OUT_DB}`);
-const actsRes = processDir(path.join(REPO, LANG, 'acts'));
+// The French tree uses different folder names for the same two document kinds.
+const DIRS = LANG === 'fra' ? ['lois', 'reglements'] : ['acts', 'regulations'];
+const actsRes = processDir(path.join(REPO, LANG, DIRS[0]));
 console.log('Acts:', actsRes);
-const regsRes = processDir(path.join(REPO, LANG, 'regulations'));
+const regsRes = processDir(path.join(REPO, LANG, DIRS[1]));
 console.log('Regulations:', regsRes);
 
 const totalDocs = db.prepare('SELECT COUNT(*) c FROM documents').get().c;

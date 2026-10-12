@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lois du Canada</string>
+    <string name="app_tagline">Lois et règlements fédéraux</string>
+    <string name="loading">Chargement…</string>
+    <string name="downloading_database">Téléchargement de la base juridique…</string>
+    <string name="download_progress">Téléchargement de la base juridique… %1$d %% (%2$.1f / %3$.1f Mo)</string>
+    <string name="download_channel">Téléchargement de la base</string>
+    <string name="download_complete">Téléchargement terminé — touchez pour ouvrir</string>
+    <string name="download_failed_short">Échec du téléchargement — touchez pour réessayer</string>
+    <string name="download_failed">Échec du téléchargement : %1$s (touchez pour réessayer)</string>
+
+    <string name="tab_acts">Lois</string>
+    <string name="tab_regulations">Règlements</string>
+
+    <string name="search_hint">Rechercher une loi ou un article…</string>
+    <string name="search_by_title">Par titre</string>
+    <string name="search_full_text">Texte intégral</string>
+
+    <string name="document_subtitle">%1$s • %2$d articles</string>
+    <string name="document_meta">%1$s • À jour au %2$s</string>
+
+    <string name="action_search">Rechercher</string>
+    <string name="action_library">Favoris et historique</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_find">Rechercher dans cette loi</string>
+    <string name="action_goto">Aller à l’article</string>
+    <string name="action_bookmark">Enregistrer cette loi</string>
+
+    <string name="copy_section">Copier l’article</string>
+    <string name="share_section">Partager l’article</string>
+    <string name="save_section">Enregistrer l’article</string>
+    <string name="section_copied">Article copié</string>
+    <string name="bookmark_added">Enregistré</string>
+    <string name="bookmark_removed">Retiré des favoris</string>
+
+    <string name="find_hint">Rechercher dans cette loi…</string>
+    <string name="find_none">Aucun résultat</string>
+    <string name="find_prev">Résultat précédent</string>
+    <string name="find_next">Résultat suivant</string>
+    <string name="find_close">Fermer</string>
+
+    <string name="goto_title">Aller à l’article</string>
+    <string name="goto_hint">Numéro d’article, p. ex. 253</string>
+    <string name="goto_not_found">Article %1$s introuvable</string>
+    <string name="exit_title">Quitter l’application ?</string>
+    <string name="exit_message">Vos lois enregistrées et votre historique restent sur cet appareil.</string>
+    <string name="exit">Quitter</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+
+    <string name="library_title">Favoris et historique</string>
+    <string name="tab_saved">Favoris</string>
+    <string name="tab_history">Historique</string>
+    <string name="empty_saved">Rien d’enregistré. Touchez l’étoile sur une loi ou un article.</string>
+    <string name="empty_history">Aucun historique de lecture.</string>
+    <string name="clear_history">Effacer</string>
+    <string name="remove">Retirer</string>
+    <string name="whole_law">Loi entière</string>
+
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_font">Taille du texte</string>
+    <string name="font_small">Petite</string>
+    <string name="font_normal">Normale</string>
+    <string name="font_large">Grande</string>
+    <string name="font_xlarge">Très grande</string>
+    <string name="settings_theme">Thème</string>
+    <string name="theme_system">Selon le système</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="settings_language">Language / Langue</string>
+    <string name="lang_en">English</string>
+    <string name="lang_fr">Français</string>
+    <string name="language_note">Au premier changement, cette édition (environ 80 Mo) est téléchargée.</string>
+</resources>

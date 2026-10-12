@@ -6,4 +6,14 @@
         android:title="@string/action_search"
         android:icon="@drawable/ic_search_white"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_library"
+        android:title="@string/action_library"
+        android:icon="@drawable/ic_star_border_white"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_settings_white"
+        app:showAsAction="always" />
 </menu>

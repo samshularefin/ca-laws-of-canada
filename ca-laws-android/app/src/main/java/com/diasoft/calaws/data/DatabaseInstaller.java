@@ -23,13 +23,11 @@ import java.util.zip.GZIPInputStream;
 public class DatabaseInstaller {
 
     private static final String PREFS = "ca_laws_prefs";
-    private static final String KEY_DB_VERSION = "db_version";
-    private static final String DB_FILENAME = "ca_laws.db";
 
     // "latest" always redirects to the most recent release's asset, so future
     // updates just need a new release — no app-side URL change required.
-    private static final String DB_URL = "https://github.com/samshularefin/ca-laws-of-canada/releases/latest/download/ca_laws.db.gz";
-    private static final String VERSION_URL = "https://github.com/samshularefin/ca-laws-of-canada/releases/latest/download/version.txt";
+    private static final String BASE_URL = "https://github.com/samshularefin/ca-laws-of-canada/releases/latest/download/";
+    private static final String VERSION_URL = BASE_URL + "version.txt";
 
     public interface ProgressListener {
         void onProgress(int percent, long downloadedBytes, long totalBytes);
@@ -37,8 +35,17 @@ public class DatabaseInstaller {
         void onError(Exception e);
     }
 
+    // English keeps the original file name and version key so existing installs are untouched.
+    private static String dbFilename(String lang) {
+        return "fr".equals(lang) ? "ca_laws_fr.db" : "ca_laws.db";
+    }
+
+    private static String versionKey(String lang) {
+        return "fr".equals(lang) ? "db_version_fr" : "db_version";
+    }
+
     public static File getDbFile(Context context) {
-        return new File(context.getFilesDir(), DB_FILENAME);
+        return new File(context.getFilesDir(), dbFilename(Prefs.getLang(context)));
     }
 
     public static boolean isInstalled(Context context) {
@@ -47,12 +54,12 @@ public class DatabaseInstaller {
 
     public static String getInstalledVersion(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        return prefs.getString(KEY_DB_VERSION, null);
+        return prefs.getString(versionKey(Prefs.getLang(context)), null);
     }
 
-    private static void setInstalledVersion(Context context, String version) {
+    private static void setInstalledVersion(Context context, String lang, String version) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        prefs.edit().putString(KEY_DB_VERSION, version).apply();
+        prefs.edit().putString(versionKey(lang), version).apply();
     }
 
     /** Fetches the remote version string; safe to call on a background thread. */
@@ -71,11 +78,12 @@ public class DatabaseInstaller {
 
     /** Downloads, gunzips, and installs the DB. Must be called off the main thread. */
     public static void installOrUpdate(Context context, String remoteVersion, ProgressListener listener) {
-        File tmpFile = new File(context.getCacheDir(), DB_FILENAME + ".tmp");
-        File finalFile = getDbFile(context);
+        final String lang = Prefs.getLang(context);
+        File tmpFile = new File(context.getCacheDir(), dbFilename(lang) + ".tmp");
+        File finalFile = new File(context.getFilesDir(), dbFilename(lang));
 
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(DB_URL).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL + dbFilename(lang) + ".gz").openConnection();
             conn.setConnectTimeout(15000);
             conn.setReadTimeout(30000);
             int contentLength = conn.getContentLength();
@@ -113,7 +121,7 @@ public class DatabaseInstaller {
                 throw new IOException("Failed to move downloaded database into place");
             }
 
-            if (remoteVersion != null) setInstalledVersion(context, remoteVersion);
+            if (remoteVersion != null) setInstalledVersion(context, lang, remoteVersion);
             if (listener != null) listener.onComplete(finalFile);
 
         } catch (Exception e) {
