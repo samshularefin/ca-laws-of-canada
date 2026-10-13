@@ -18,7 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 import com.diasoft.calaws.R;
+import com.diasoft.calaws.ads.AdsManager;
 import com.diasoft.calaws.data.LawsDbHelper;
 import com.diasoft.calaws.data.Prefs;
 import com.diasoft.calaws.data.UserDb;
@@ -27,17 +30,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_SECTION = 1;
+    private static final int TYPE_AD = 2;
 
     private final UserDb userDb;
     private LawsDbHelper.DocumentDetail header;
     private List<LawsDbHelper.Section> sections = new ArrayList<>();
     private Set<Integer> bookmarked = new HashSet<>();
     private String highlight;
+    /** Adapter position (header is 0) -> native ad shown there, ascending. */
+    private final TreeMap<Integer, NativeAd> adSlots = new TreeMap<>();
 
     public SectionAdapter(UserDb userDb) {
         this.userDb = userDb;
@@ -64,14 +71,43 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
+    /** Inserts an already-loaded native ad at adapter {@code position}; positions arrive ascending. */
+    public void addNativeAd(int position, NativeAd ad) {
+        adSlots.put(position, ad);
+        notifyItemInserted(position);
+    }
+
+    public void destroyAds() {
+        for (NativeAd ad : adSlots.values()) ad.destroy();
+        adSlots.clear();
+    }
+
+    /** Adapter position of the section at {@code sectionIndex}, accounting for the header and ad rows. */
+    public int adapterPositionOfSection(int sectionIndex) {
+        int p = sectionIndex + 1;
+        for (int adPos : adSlots.keySet()) {
+            if (adPos <= p) p++; else break;
+        }
+        return p;
+    }
+
+    private int sectionIndexAt(int position) {
+        int adsBefore = 0;
+        for (int adPos : adSlots.keySet()) {
+            if (adPos < position) adsBefore++; else break;
+        }
+        return position - 1 - adsBefore;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? TYPE_HEADER : TYPE_SECTION;
+        if (position == 0) return TYPE_HEADER;
+        return adSlots.containsKey(position) ? TYPE_AD : TYPE_SECTION;
     }
 
     @Override
     public int getItemCount() {
-        return sections.size() + 1; // +1 for header
+        return sections.size() + 1 + adSlots.size(); // +1 for header
     }
 
     @NonNull
@@ -81,6 +117,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.item_document_header, parent, false);
             return new HeaderViewHolder(v);
+        } else if (viewType == TYPE_AD) {
+            return new AdViewHolder(inflater.inflate(R.layout.item_native_ad, parent, false));
         } else {
             View v = inflater.inflate(R.layout.item_section, parent, false);
             return new SectionViewHolder(v);
@@ -89,13 +127,15 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof HeaderViewHolder && header != null) {
+        if (holder instanceof AdViewHolder) {
+            AdsManager.populateNativeAdView(((AdViewHolder) holder).adView, adSlots.get(position));
+        } else if (holder instanceof HeaderViewHolder && header != null) {
             HeaderViewHolder h = (HeaderViewHolder) holder;
             h.title.setText(header.longTitle);
             h.meta.setText(h.itemView.getContext().getString(
                     R.string.document_meta, header.consolidatedNumber, header.currentTo));
         } else if (holder instanceof SectionViewHolder) {
-            LawsDbHelper.Section s = sections.get(position - 1);
+            LawsDbHelper.Section s = sections.get(sectionIndexAt(position));
             SectionViewHolder sh = (SectionViewHolder) holder;
             Context ctx = sh.itemView.getContext();
             float scale = Prefs.getFontScale(ctx);
@@ -183,6 +223,14 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         send.setType("text/plain");
         send.putExtra(Intent.EXTRA_TEXT, citation(s));
         context.startActivity(Intent.createChooser(send, context.getString(R.string.share_section)));
+    }
+
+    static class AdViewHolder extends RecyclerView.ViewHolder {
+        final NativeAdView adView;
+        AdViewHolder(@NonNull View itemView) {
+            super(itemView);
+            adView = (NativeAdView) itemView;
+        }
     }
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder {

@@ -44,7 +44,7 @@ public class SearchActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
-        com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.adContainer, R.id.adView);
+        bannerAdView = com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.bannerAdContainer);
 
         dbHelper = new LawsDbHelper(this);
         recyclerView = findViewById(R.id.searchResults);
@@ -121,9 +121,24 @@ public class SearchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private com.google.android.gms.ads.AdView bannerAdView;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bannerAdView != null) bannerAdView.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        if (bannerAdView != null) bannerAdView.pause();
+        super.onPause();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (bannerAdView != null) bannerAdView.destroy();
         dbHelper.close();
         executor.shutdown();
     }

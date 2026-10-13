@@ -24,6 +24,7 @@ import java.util.List;
 public class LibraryActivity extends AppCompatActivity {
 
     private UserDb userDb;
+    private com.google.android.gms.ads.AdView bannerAdView;
     private RecyclerView list;
     private TextView empty;
     private TabLayout tabs;
@@ -37,7 +38,7 @@ public class LibraryActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
-        com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.adContainer, R.id.adView);
+        bannerAdView = com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.bannerAdContainer);
 
         userDb = new UserDb(this);
         list = findViewById(R.id.libraryList);
@@ -62,7 +63,14 @@ public class LibraryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (bannerAdView != null) bannerAdView.resume();
         reload();
+    }
+
+    @Override
+    protected void onPause() {
+        if (bannerAdView != null) bannerAdView.pause();
+        super.onPause();
     }
 
     private boolean showingSaved() {
@@ -109,6 +117,7 @@ public class LibraryActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (bannerAdView != null) bannerAdView.destroy();
         userDb.close();
     }
 

@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.diasoft.calaws.R;
+import com.diasoft.calaws.ads.AdsManager;
+import com.diasoft.calaws.ads.ConsentManager;
 import com.diasoft.calaws.data.DatabaseInstaller;
 import com.diasoft.calaws.data.DownloadService;
 
@@ -22,7 +24,10 @@ public class SplashActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView statusText;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private static final long CONSENT_TIMEOUT_MS = 3000;
     private boolean navigated;
+    private boolean consentResolved;
+    private Runnable consentTimeout;
 
     private final DownloadService.Listener serviceListener = new DownloadService.Listener() {
         @Override
@@ -32,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         public void onComplete() {
-            mainHandler.post(SplashActivity.this::goToMain);
+            mainHandler.post(SplashActivity.this::maybeGoToMain);
         }
 
         @Override
@@ -49,9 +54,25 @@ public class SplashActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         statusText = findViewById(R.id.statusText);
 
+        // Consent (EEA/UK form if required) must be settled before any ad request; never let it block entry for long.
+        AdsManager.resetColdLaunchGate();
+        ConsentManager.requestConsent(this, canRequestAds -> mainHandler.post(() -> {
+            consentResolved = true;
+            if (canRequestAds) {
+                AdsManager.initialize(this);
+                AdsManager.preloadInterstitial(this);
+                AdsManager.preloadAppOpenAd(this);
+            }
+            maybeGoToMain();
+        }));
+        consentTimeout = () -> {
+            consentResolved = true;
+            maybeGoToMain();
+        };
+        mainHandler.postDelayed(consentTimeout, CONSENT_TIMEOUT_MS);
+
         if (DatabaseInstaller.isInstalled(this)) {
-            // Already installed — go straight in, check for updates quietly in the background.
-            goToMain();
+            // Already installed — enter once consent is settled; check for updates quietly meanwhile.
             checkForUpdateInBackground();
         } else {
             progressBar.setVisibility(View.VISIBLE);
@@ -71,7 +92,7 @@ public class SplashActivity extends AppCompatActivity {
         DownloadService.setListener(serviceListener);
         // Catch up with anything that happened while this screen was not visible.
         if (DatabaseInstaller.isInstalled(this) && !DownloadService.running) {
-            goToMain();
+            maybeGoToMain();
         } else if (DownloadService.error != null) {
             showError(DownloadService.error);
         } else if (DownloadService.running && DownloadService.total > 0) {
@@ -123,9 +144,10 @@ public class SplashActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void goToMain() {
-        if (navigated) return;
+    private void maybeGoToMain() {
+        if (navigated || !consentResolved || DownloadService.running || !DatabaseInstaller.isInstalled(this)) return;
         navigated = true;
+        if (consentTimeout != null) mainHandler.removeCallbacks(consentTimeout);
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }

@@ -16,13 +16,18 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.diasoft.calaws.R;
+import com.diasoft.calaws.ads.Ads;
+import com.diasoft.calaws.ads.AdsManager;
 import com.diasoft.calaws.data.LawsDbHelper;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.diasoft.calaws.data.UserDb;
 
 import java.util.ArrayList;
@@ -47,6 +52,8 @@ public class DocumentActivity extends AppCompatActivity {
     private String docId;
     private LawsDbHelper.DocumentDetail doc;
     private MenuItem bookmarkItem;
+    private AdView bannerAdView;
+    private boolean destroyed;
 
     private View findBar;
     private EditText findInput;
@@ -61,8 +68,24 @@ public class DocumentActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
-        com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.adContainer, R.id.adView);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        bannerAdView = Ads.attachBanner(this, R.id.bannerAdContainer);
+        AdsManager.preloadInterstitial(this);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (findBar.getVisibility() == View.VISIBLE) {
+                    closeFind();
+                    return;
+                }
+                // Every few exits an interstitial is shown first; navigation always proceeds afterwards.
+                AdsManager.maybeShowInterstitial(DocumentActivity.this, () -> {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                });
+            }
+        });
 
         dbHelper = new LawsDbHelper(this);
         userDb = new UserDb(this);
@@ -90,6 +113,7 @@ public class DocumentActivity extends AppCompatActivity {
                 adapter.setHeader(doc);
                 adapter.setSections(doc.sections);
                 adapter.setBookmarked(userDb.bookmarkedSeqs(id));
+                loadReaderAds();
                 userDb.addHistory(id, doc.shortTitle);
                 updateBookmarkIcon();
                 if (scrollToSeq >= 0) {
@@ -97,6 +121,27 @@ public class DocumentActivity extends AppCompatActivity {
                     recyclerView.scrollToPosition(scrollToSeq + 1);
                 }
             });
+        });
+    }
+
+    /** A lead-in ad right under the header, then one every few sections, at most a handful per law. */
+    private void loadReaderAds() {
+        if (!AdsManager.nativeAdsEnabled() || doc == null || doc.sections.isEmpty()) return;
+        List<Integer> positions = new ArrayList<>();
+        positions.add(1);
+        for (int p : AdsManager.computeAdPositions(doc.sections.size(), AdsManager.nativeAdInterval())) {
+            positions.add(p + 2); // +1 for the header row, +1 for the lead-in ad inserted before it
+        }
+        if (positions.size() > AdsManager.MAX_NATIVE_ADS_PER_LIST) {
+            positions = positions.subList(0, AdsManager.MAX_NATIVE_ADS_PER_LIST);
+        }
+        final List<Integer> slots = positions;
+        AdsManager.loadNativeAds(this, slots.size(), ads -> {
+            if (destroyed) {
+                for (NativeAd ad : ads) ad.destroy();
+                return;
+            }
+            for (int i = 0; i < ads.size(); i++) adapter.addNativeAd(slots.get(i), ads.get(i));
         });
     }
 
@@ -172,7 +217,7 @@ public class DocumentActivity extends AppCompatActivity {
         if (want.isEmpty()) return;
         for (int i = 0; i < doc.sections.size(); i++) {
             if (normalizeLabel(doc.sections.get(i).label).equals(want)) {
-                layoutManager.scrollToPositionWithOffset(i + 1, 0);
+                layoutManager.scrollToPositionWithOffset(adapter.adapterPositionOfSection(i), 0);
                 return;
             }
         }
@@ -252,12 +297,27 @@ public class DocumentActivity extends AppCompatActivity {
 
     private void showMatch() {
         findCount.setText(String.format(Locale.getDefault(), "%d/%d", matchIdx + 1, matches.size()));
-        layoutManager.scrollToPositionWithOffset(matches.get(matchIdx) + 1, 0);
+        layoutManager.scrollToPositionWithOffset(adapter.adapterPositionOfSection(matches.get(matchIdx)), 0);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bannerAdView != null) bannerAdView.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        if (bannerAdView != null) bannerAdView.pause();
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        destroyed = true;
+        if (bannerAdView != null) bannerAdView.destroy();
+        adapter.destroyAds();
         dbHelper.close();
         userDb.close();
         executor.shutdown();

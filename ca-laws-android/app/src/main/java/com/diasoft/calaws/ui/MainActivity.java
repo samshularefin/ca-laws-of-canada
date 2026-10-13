@@ -12,7 +12,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.tabs.TabLayout;
 import com.diasoft.calaws.R;
+import com.diasoft.calaws.ads.Ads;
+import com.diasoft.calaws.ads.AdsManager;
+import com.diasoft.calaws.ads.LazyNativeAdLoader;
 import com.diasoft.calaws.data.LawsDbHelper;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefresh;
     private TabLayout tabLayout;
     private DocumentAdapter adapter;
+    private AdView bannerAdView;
+    private LazyNativeAdLoader adLoader;
     private LawsDbHelper dbHelper;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.adContainer, R.id.adView);
+        bannerAdView = Ads.attachBanner(this, R.id.bannerAdContainer);
 
         recyclerView = findViewById(R.id.recyclerView);
         swipeRefresh = findViewById(R.id.swipeRefresh);
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DocumentAdapter(this::openDocument);
         recyclerView.setAdapter(adapter);
+        adLoader = new LazyNativeAdLoader(this, recyclerView, adapter::addNativeAd);
 
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_acts));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_regulations));
@@ -102,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
         currentPage = 1;
         hasMore = true;
         adapter.clear();
+        // Slots for far more rows than are loaded yet; the loader keeps an ad buffered until its slot exists.
+        adLoader.start(AdsManager.computeAdPositions(5000, AdsManager.nativeAdInterval()));
         loadNextPage();
     }
 
@@ -153,8 +162,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (bannerAdView != null) bannerAdView.resume();
+        AdsManager.maybeShowAppOpenAdOnColdLaunch(this);
+    }
+
+    @Override
+    protected void onPause() {
+        if (bannerAdView != null) bannerAdView.pause();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (bannerAdView != null) bannerAdView.destroy();
+        adLoader.stop();
+        adapter.destroyAds();
         dbHelper.close();
         executor.shutdown();
     }

@@ -5,6 +5,7 @@
     <string name="loading">Chargement…</string>
     <string name="downloading_database">Téléchargement de la base juridique…</string>
     <string name="download_progress">Téléchargement de la base juridique… %1$d %% (%2$.1f / %3$.1f Mo)</string>
+    <string name="ad_label">Annonce</string>
     <string name="download_channel">Téléchargement de la base</string>
     <string name="download_complete">Téléchargement terminé — touchez pour ouvrir</string>
     <string name="download_failed_short">Échec du téléchargement — touchez pour réessayer</string>
