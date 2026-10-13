@@ -5,8 +5,6 @@
     <string name="loading">Loading…</string>
     <string name="downloading_database">Downloading legal database…</string>
     <string name="download_progress">Downloading legal database… %1$d%% (%2$.1f / %3$.1f MB)</string>
-    <!-- Google's public test banner unit; replace with the real unit ID before release. -->
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="download_channel">Database download</string>
     <string name="download_complete">Download complete — tap to open</string>
     <string name="download_failed_short">Download failed — tap to retry</string>
