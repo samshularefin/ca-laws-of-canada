@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +14,6 @@ import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
@@ -87,25 +83,16 @@ public class AdsManager {
     }
 
     /**
-     * Loads an adaptive anchored banner into {@code container}, sized to the current screen
-     * width. Returns the created AdView so the caller can wire it into the activity lifecycle
-     * (resume/pause/destroy). If consent has not resolved yet the banner loads as soon as it does;
-     * failed loads are retried with backoff.
+     * Loads the standard banner declared in the screen's XML (an {@code AdView} with a fixed size and
+     * ad unit) and shows {@code container} only once an ad is actually available. If consent has not
+     * resolved yet the banner loads as soon as it does; failed loads are retried with backoff.
      */
-    public static AdView loadAdaptiveBanner(Activity activity, FrameLayout container) {
-        container.removeAllViews();
-
-        AdView adView = new AdView(activity);
-        adView.setAdUnitId(activity.getString(R.string.banner_ad_unit_id));
-        adView.setAdSize(currentOrientationAnchoredAdaptiveBannerSize(activity));
-        adView.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, android.view.Gravity.CENTER));
-
+    public static void loadBanner(AdView adView, View container) {
         AtomicInteger attempts = new AtomicInteger(0);
         adView.setAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(LoadAdError error) {
-                container.setVisibility(android.view.View.GONE);
+                container.setVisibility(View.GONE);
                 int attempt = attempts.incrementAndGet();
                 if (attempt > MAX_LOAD_RETRIES) return;
                 mainHandler.postDelayed(() -> {
@@ -116,28 +103,17 @@ public class AdsManager {
             @Override
             public void onAdLoaded() {
                 attempts.set(0);
-                container.setVisibility(android.view.View.VISIBLE);
+                container.setVisibility(View.VISIBLE);
             }
         });
-        container.addView(adView);
 
         if (canRequestAds) {
-            container.setVisibility(android.view.View.VISIBLE);
+            container.setVisibility(View.VISIBLE);
             adView.loadAd(new AdRequest.Builder().build());
         } else {
-            container.setVisibility(android.view.View.GONE);
+            container.setVisibility(View.GONE);
             pendingBanners.add(new WeakReference<>(adView));
         }
-        return adView;
-    }
-
-    private static AdSize currentOrientationAnchoredAdaptiveBannerSize(Activity activity) {
-        DisplayMetrics metrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        float density = metrics.density;
-        int adWidthPixels = metrics.widthPixels;
-        int adWidth = (int) (adWidthPixels / density);
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
     }
 
     public interface NativeAdsCallback {

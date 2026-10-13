@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        bannerAdView = Ads.attachBanner(this, R.id.bannerAdContainer);
+        bannerAdView = Ads.attachBanner(this);
 
         recyclerView = findViewById(R.id.recyclerView);
         swipeRefresh = findViewById(R.id.swipeRefresh);

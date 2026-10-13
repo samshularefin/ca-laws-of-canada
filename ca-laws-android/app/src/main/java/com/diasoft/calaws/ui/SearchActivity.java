@@ -44,7 +44,7 @@ public class SearchActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
-        bannerAdView = com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.bannerAdContainer);
+        bannerAdView = com.diasoft.calaws.ads.Ads.attachBanner(this);
 
         dbHelper = new LawsDbHelper(this);
         recyclerView = findViewById(R.id.searchResults);

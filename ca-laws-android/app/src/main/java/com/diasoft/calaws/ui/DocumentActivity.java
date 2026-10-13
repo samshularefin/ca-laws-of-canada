@@ -69,7 +69,7 @@ public class DocumentActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        bannerAdView = Ads.attachBanner(this, R.id.bannerAdContainer);
+        bannerAdView = Ads.attachBanner(this);
         AdsManager.preloadInterstitial(this);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

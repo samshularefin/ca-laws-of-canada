@@ -38,7 +38,7 @@ public class LibraryActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
-        bannerAdView = com.diasoft.calaws.ads.Ads.attachBanner(this, R.id.bannerAdContainer);
+        bannerAdView = com.diasoft.calaws.ads.Ads.attachBanner(this);
 
         userDb = new UserDb(this);
         list = findViewById(R.id.libraryList);
