@@ -9,9 +9,9 @@
     android:background="@color/splashBackground">
 
     <ImageView
-        android:layout_width="176dp"
-        android:layout_height="176dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginBottom="32dp"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_splash_logo" />
 
