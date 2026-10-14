@@ -25,8 +25,11 @@ public class SplashActivity extends AppCompatActivity {
     private TextView statusText;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private static final long CONSENT_TIMEOUT_MS = 3000;
+    // The splash stays up at least this long so the first ads have time to load before the app opens.
+    private static final long MIN_SPLASH_MS = 4000;
     private boolean navigated;
     private boolean consentResolved;
+    private boolean minTimeElapsed;
     private Runnable consentTimeout;
 
     private final DownloadService.Listener serviceListener = new DownloadService.Listener() {
@@ -70,6 +73,10 @@ public class SplashActivity extends AppCompatActivity {
             maybeGoToMain();
         };
         mainHandler.postDelayed(consentTimeout, CONSENT_TIMEOUT_MS);
+        mainHandler.postDelayed(() -> {
+            minTimeElapsed = true;
+            maybeGoToMain();
+        }, MIN_SPLASH_MS);
 
         if (DatabaseInstaller.isInstalled(this)) {
             // Already installed — enter once consent is settled; check for updates quietly meanwhile.
@@ -145,7 +152,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void maybeGoToMain() {
-        if (navigated || !consentResolved || DownloadService.running || !DatabaseInstaller.isInstalled(this)) return;
+        if (navigated || !consentResolved || !minTimeElapsed || DownloadService.running || !DatabaseInstaller.isInstalled(this)) return;
         navigated = true;
         if (consentTimeout != null) mainHandler.removeCallbacks(consentTimeout);
         startActivity(new Intent(this, MainActivity.class));
