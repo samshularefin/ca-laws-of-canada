@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lois du Canada</string>
-    <string name="app_tagline">Lois et règlements fédéraux</string>
     <string name="loading">Chargement…</string>
     <string name="downloading_database">Téléchargement de la base juridique…</string>
     <string name="download_progress">Téléchargement de la base juridique… %1$d %% (%2$.1f / %3$.1f Mo)</string>

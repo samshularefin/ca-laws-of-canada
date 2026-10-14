@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Laws of Canada</string>
-    <string name="app_tagline">Federal Acts &amp; Regulations</string>
     <string name="loading">Loading…</string>
     <string name="downloading_database">Downloading legal database…</string>
     <string name="download_progress">Downloading legal database… %1$d%% (%2$.1f / %3$.1f MB)</string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/8797504726</string>
-    <string name="native_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/8438412074</string>
-    <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/2064575419</string>
-    <string name="app_open_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/9418205845</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="native_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="app_open_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/9257395921</string>
     <string name="ad_label">Ad</string>
     <string name="download_channel">Database download</string>
     <string name="download_complete">Download complete — tap to open</string>
