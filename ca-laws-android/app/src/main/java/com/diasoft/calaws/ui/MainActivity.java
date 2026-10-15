@@ -79,12 +79,7 @@ public class MainActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                new com.google.android.material.dialog.MaterialAlertDialogBuilder(MainActivity.this)
-                        .setTitle(R.string.exit_title)
-                        .setMessage(R.string.exit_message)
-                        .setPositiveButton(R.string.exit, (d, w) -> finishAffinity())
-                        .setNegativeButton(R.string.cancel, null)
-                        .show();
+                showExitDialog();
             }
         });
 
@@ -103,6 +98,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         resetAndLoad();
+    }
+
+    private void showExitDialog() {
+        android.view.View content = getLayoutInflater().inflate(R.layout.dialog_exit, null);
+        androidx.appcompat.app.AlertDialog dialog =
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_CaLaws_Dialog)
+                        .setView(content)
+                        .create();
+        content.findViewById(R.id.exitStay).setOnClickListener(v -> dialog.dismiss());
+        content.findViewById(R.id.exitConfirm).setOnClickListener(v -> finishAffinity());
+        dialog.show();
     }
 
     private void resetAndLoad() {

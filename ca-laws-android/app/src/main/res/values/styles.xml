@@ -16,7 +16,9 @@
     <style name="Widget.CaLaws.TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="android:background">@color/primary</item>
         <item name="tabIndicatorColor">@color/accent</item>
-        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingTop">0dp</item>
+        <item name="tabPaddingBottom">0dp</item>
         <item name="tabSelectedTextColor">@color/white</item>
         <item name="tabTextColor">@color/tabUnselected</item>
         <item name="tabTextAppearance">@style/TextAppearance.CaLaws.Tab</item>
@@ -25,7 +27,7 @@
 
     <style name="TextAppearance.CaLaws.Tab" parent="TextAppearance.MaterialComponents.Button">
         <item name="textAllCaps">false</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="Widget.CaLaws.SectionLabel" parent="">
@@ -36,5 +38,14 @@
         <item name="android:paddingHorizontal">8dp</item>
         <item name="android:paddingVertical">3dp</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ShapeAppearance.CaLaws.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="ThemeOverlay.CaLaws.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.CaLaws.Dialog</item>
     </style>
 </resources>

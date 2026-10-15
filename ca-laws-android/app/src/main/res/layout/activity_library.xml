@@ -16,7 +16,8 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="48dp"
+            android:minHeight="48dp"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="@color/white"
@@ -27,7 +28,7 @@
             android:id="@+id/libraryTabs"
             style="@style/Widget.CaLaws.TabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             app:tabGravity="fill"
             app:tabMode="fixed" />
 
@@ -43,8 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp" />
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
 
         <TextView
             android:id="@+id/libraryEmpty"

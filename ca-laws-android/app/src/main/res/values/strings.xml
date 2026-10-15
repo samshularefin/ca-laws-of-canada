@@ -53,6 +53,7 @@
     <string name="exit_title">Exit app?</string>
     <string name="exit_message">Your saved laws and history stay on this device.</string>
     <string name="exit">Exit</string>
+    <string name="exit_stay">Stay</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
