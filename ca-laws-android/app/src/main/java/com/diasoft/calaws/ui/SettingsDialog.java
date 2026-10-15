@@ -2,6 +2,7 @@ package com.diasoft.calaws.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -29,6 +30,10 @@ public final class SettingsDialog {
         int mode = Prefs.getNightMode(activity);
         themeGroup.check(mode == AppCompatDelegate.MODE_NIGHT_NO ? R.id.themeLight
                 : mode == AppCompatDelegate.MODE_NIGHT_YES ? R.id.themeDark : R.id.themeSystem);
+
+        view.findViewById(R.id.privacyLink).setOnClickListener(v ->
+                activity.startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(activity.getString(R.string.privacy_policy_url)))));
 
         final String oldLang = Prefs.getLang(activity);
         langGroup.check("fr".equals(oldLang) ? R.id.langFr : R.id.langEn);
