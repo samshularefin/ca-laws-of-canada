@@ -153,9 +153,24 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void playEntrance() {
+        boolean dark = (getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+        androidx.core.view.WindowInsetsControllerCompat bars =
+                new androidx.core.view.WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+        bars.setAppearanceLightStatusBars(!dark);
+        bars.setAppearanceLightNavigationBars(!dark);
+
         android.view.View logo = findViewById(R.id.splashLogo);
+        // Soft shadow that follows the rounded tile (visible on the white splash).
+        logo.setOutlineProvider(new android.view.ViewOutlineProvider() {
+            @Override
+            public void getOutline(android.view.View view, android.graphics.Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), view.getWidth() * 0.18f);
+            }
+        });
+        if (android.os.Build.VERSION.SDK_INT >= 28) logo.setOutlineSpotShadowColor(0xFF1A3C6E);
         android.view.View glow = findViewById(R.id.splashGlow);
-        android.view.View tagline = findViewById(R.id.splashTagline);
         android.view.animation.Interpolator ease = new android.view.animation.DecelerateInterpolator(1.6f);
 
         logo.setAlpha(0f);
@@ -168,7 +183,6 @@ public class SplashActivity extends AppCompatActivity {
 
         statusText.setAlpha(0f);
         statusText.animate().alpha(1f).setStartDelay(500).setDuration(600).start();
-        tagline.animate().alpha(0.85f).setStartDelay(700).setDuration(700).start();
     }
 
     private void maybeGoToMain() {

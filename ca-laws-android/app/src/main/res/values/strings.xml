@@ -10,7 +10,6 @@
     <string name="app_open_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/9418205845</string>
     <string name="privacy_policy_url" translatable="false">https://lawofcanada.blogspot.com/p/privacy-policy-of-laws-of-canada-app.html</string>
     <string name="privacy_policy">Privacy policy</string>
-    <string name="app_tagline">Federal Acts &amp; Regulations</string>
     <string name="ad_label">Ad</string>
     <string name="download_channel">Database download</string>
     <string name="download_complete">Download complete — tap to open</string>
