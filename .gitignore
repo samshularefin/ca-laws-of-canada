@@ -17,3 +17,7 @@ ca_laws.db
 ca_laws.db.gz
 ca_laws.db/
 version.txt
+
+# Local/private build artifacts: never commit (the repo is public)
+ca-laws-android/app/google-services.json
+ca-laws-android/app/release/
