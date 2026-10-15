@@ -1,37 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:fitsSystemWindows="true"
-    android:padding="40dp"
-    android:background="@color/splashBackground">
+    android:background="@drawable/bg_splash"
+    android:fitsSystemWindows="true">
 
-    <ImageView
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_marginBottom="32dp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_splash_logo" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100"
-        android:visibility="gone"
-        android:progressTint="@color/accent"
-        android:progressBackgroundTint="@color/primaryLight"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="40dp">
+
+        <FrameLayout
+            android:layout_width="300dp"
+            android:layout_height="300dp">
+
+            <View
+                android:id="@+id/splashGlow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_splash_glow" />
+
+            <ImageView
+                android:id="@+id/splashLogo"
+                android:layout_width="132dp"
+                android:layout_height="132dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/app_name"
+                android:elevation="8dp"
+                android:src="@drawable/ic_splash_logo" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="36dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="24dp"
+            android:background="@color/splashGold" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="220dp"
+            android:layout_height="4dp"
+            android:layout_marginBottom="14dp"
+            android:max="100"
+            android:progressDrawable="@drawable/splash_progress"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:letterSpacing="0.05"
+            android:text="@string/loading"
+            android:textColor="@color/splashTextMuted"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/statusText"
+        android:id="@+id/splashTagline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/loading"
-        android:textSize="13sp"
-        android:textColor="@color/splashTextMuted" />
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:alpha="0"
+        android:letterSpacing="0.18"
+        android:text="@string/app_tagline"
+        android:textAllCaps="true"
+        android:textColor="@color/splashGold"
+        android:textSize="10sp"
+        android:textStyle="bold" />
 
-</LinearLayout>
+</FrameLayout>

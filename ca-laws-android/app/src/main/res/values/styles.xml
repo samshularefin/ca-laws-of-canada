@@ -9,8 +9,8 @@
     </style>
 
     <style name="Theme.CaLaws.Splash" parent="Theme.CaLaws">
-        <item name="android:windowBackground">@color/splashBackground</item>
-        <item name="android:statusBarColor">@color/splashBackground</item>
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:statusBarColor">@color/splashTop</item>
     </style>
 
     <style name="Widget.CaLaws.TabLayout" parent="Widget.MaterialComponents.TabLayout">

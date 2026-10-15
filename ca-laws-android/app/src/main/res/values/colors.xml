@@ -10,6 +10,9 @@
     <color name="cardBackground">#FFFFFF</color>
 
     <color name="splashBackground">#1A3C6E</color>
+    <color name="splashTop">#0B2A5B</color>
+    <color name="splashBottom">#031634</color>
+    <color name="splashGold">#D9B45A</color>
     <color name="splashText">#FFFFFF</color>
     <color name="splashTextMuted">#B7C4DA</color>
 

@@ -56,6 +56,7 @@ public class SplashActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         statusText = findViewById(R.id.statusText);
+        playEntrance();
 
         // Consent (EEA/UK form if required) must be settled before any ad request; never let it block entry for long.
         AdsManager.resetColdLaunchGate();
@@ -149,6 +150,25 @@ public class SplashActivity extends AppCompatActivity {
                 // Offline or host unreachable — app continues to work with the existing DB.
             }
         }).start();
+    }
+
+    private void playEntrance() {
+        android.view.View logo = findViewById(R.id.splashLogo);
+        android.view.View glow = findViewById(R.id.splashGlow);
+        android.view.View tagline = findViewById(R.id.splashTagline);
+        android.view.animation.Interpolator ease = new android.view.animation.DecelerateInterpolator(1.6f);
+
+        logo.setAlpha(0f);
+        logo.setScaleX(0.88f);
+        logo.setScaleY(0.88f);
+        logo.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(800).setInterpolator(ease).start();
+
+        glow.setAlpha(0f);
+        glow.animate().alpha(1f).setStartDelay(150).setDuration(1100).start();
+
+        statusText.setAlpha(0f);
+        statusText.animate().alpha(1f).setStartDelay(500).setDuration(600).start();
+        tagline.animate().alpha(0.85f).setStartDelay(700).setDuration(700).start();
     }
 
     private void maybeGoToMain() {
