@@ -8,6 +8,18 @@
     <string name="native_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/8438412074</string>
     <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/2064575419</string>
     <string name="app_open_ad_unit_id" translatable="false">ca-app-pub-8585939903020301/9418205845</string>
+    <string name="source_url_en" translatable="false">https://laws-lois.justice.gc.ca/eng/</string>
+    <string name="source_url_fr" translatable="false">https://laws-lois.justice.gc.ca/fra/</string>
+    <string name="licence_url_en" translatable="false">https://open.canada.ca/en/open-government-licence-canada</string>
+    <string name="licence_url_fr" translatable="false">https://ouvert.canada.ca/fr/licence-du-gouvernement-ouvert-canada</string>
+    <string name="open_data_url" translatable="false">https://github.com/justicecanada/laws-lois-xml</string>
+    <string name="about_title">Source &amp; disclaimer</string>
+    <string name="about_attribution">Source: Justice Laws Website, Department of Justice Canada. Contains information licensed under the Open Government Licence – Canada.</string>
+    <string name="about_disclaimer">This app is not an official government app and is not affiliated with or endorsed by the Government of Canada. Consolidated laws are provided for convenience only and are not legal advice; for official use, consult the official sources.</string>
+    <string name="link_source">Official source: Justice Laws Website</string>
+    <string name="link_licence">Open Government Licence – Canada</string>
+    <string name="link_open_data">Open data (XML)</string>
+    <string name="view_official">View on the Justice Laws Website ›</string>
     <string name="privacy_policy_url" translatable="false">https://lawofcanada.blogspot.com/p/privacy-policy-of-laws-of-canada-app.html</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="ad_label">Ad</string>

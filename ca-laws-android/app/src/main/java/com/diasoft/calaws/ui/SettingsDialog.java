@@ -31,9 +31,13 @@ public final class SettingsDialog {
         themeGroup.check(mode == AppCompatDelegate.MODE_NIGHT_NO ? R.id.themeLight
                 : mode == AppCompatDelegate.MODE_NIGHT_YES ? R.id.themeDark : R.id.themeSystem);
 
-        view.findViewById(R.id.privacyLink).setOnClickListener(v ->
-                activity.startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(activity.getString(R.string.privacy_policy_url)))));
+        boolean fr = "fr".equals(Prefs.getLang(activity));
+        open(activity, view, R.id.privacyLink, activity.getString(R.string.privacy_policy_url));
+        open(activity, view, R.id.linkSource,
+                activity.getString(fr ? R.string.source_url_fr : R.string.source_url_en));
+        open(activity, view, R.id.linkLicence,
+                activity.getString(fr ? R.string.licence_url_fr : R.string.licence_url_en));
+        open(activity, view, R.id.linkOpenData, activity.getString(R.string.open_data_url));
 
         final String oldLang = Prefs.getLang(activity);
         langGroup.check("fr".equals(oldLang) ? R.id.langFr : R.id.langEn);
@@ -44,6 +48,11 @@ public final class SettingsDialog {
                 .setPositiveButton(R.string.ok, (d, w) -> apply(activity, fontGroup, themeGroup, langGroup, oldLang))
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    private static void open(Activity activity, View root, int viewId, String url) {
+        root.findViewById(viewId).setOnClickListener(v ->
+                activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))));
     }
 
     private static void apply(Activity activity, RadioGroup fontGroup, RadioGroup themeGroup,

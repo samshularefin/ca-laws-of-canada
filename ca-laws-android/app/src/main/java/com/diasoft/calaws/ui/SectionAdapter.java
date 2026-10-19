@@ -134,6 +134,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             h.title.setText(header.longTitle);
             h.meta.setText(h.itemView.getContext().getString(
                     R.string.document_meta, header.consolidatedNumber, header.currentTo));
+            h.source.setOnClickListener(v -> openOfficialPage(v.getContext(), header));
         } else if (holder instanceof SectionViewHolder) {
             LawsDbHelper.Section s = sections.get(sectionIndexAt(position));
             SectionViewHolder sh = (SectionViewHolder) holder;
@@ -233,10 +234,21 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /** The law's own page on the Justice Laws Website; the file name in the open data is the page's path. */
+    private static void openOfficialPage(Context context, LawsDbHelper.DocumentDetail doc) {
+        boolean fr = "fr".equals(Prefs.getLang(context));
+        boolean act = "act".equals(doc.type);
+        String folder = fr ? (act ? "lois" : "reglements") : (act ? "acts" : "regulations");
+        String url = "https://laws-lois.justice.gc.ca/" + (fr ? "fra" : "eng") + "/" + folder + "/"
+                + android.net.Uri.encode(doc.id, ",.") + "/index.html";
+        context.startActivity(new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url)));
+    }
+
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
-        TextView title, meta;
+        TextView title, meta, source;
         HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
+            source = itemView.findViewById(R.id.headerSource);
             title = itemView.findViewById(R.id.headerTitle);
             meta = itemView.findViewById(R.id.headerMeta);
         }

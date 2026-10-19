@@ -23,4 +23,16 @@
         android:textColor="@color/headerTextMuted"
         android:layout_marginTop="10dp" />
 
+    <TextView
+        android:id="@+id/headerSource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="?attr/selectableItemBackground"
+        android:paddingVertical="4dp"
+        android:text="@string/view_official"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
 </LinearLayout>
