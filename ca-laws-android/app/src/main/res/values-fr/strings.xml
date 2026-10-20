@@ -3,7 +3,7 @@
     <string name="app_name">Lois du Canada</string>
     <string name="loading">Chargement…</string>
     <string name="downloading_database">Téléchargement de la base juridique…</string>
-    <string name="download_progress">Téléchargement de la base juridique… %1$d %% (%2$.1f / %3$.1f Mo)</string>
+    <string name="download_progress">Téléchargement… %1$d %% · %2$.1f / %3$.1f Mo</string>
     <string name="about_title">Source et avis</string>
     <string name="about_attribution">Source : site Web de la législation (Justice Laws), ministère de la Justice du Canada. Contient de l’information utilisée sous la Licence du gouvernement ouvert – Canada.</string>
     <string name="about_disclaimer">Cette application n’est pas une application gouvernementale officielle et n’est ni affiliée au gouvernement du Canada ni approuvée par celui-ci. Les lois codifiées sont fournies à titre indicatif seulement et ne constituent pas un avis juridique; pour un usage officiel, consultez les sources officielles.</string>

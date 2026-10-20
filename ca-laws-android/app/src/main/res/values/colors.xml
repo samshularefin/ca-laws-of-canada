@@ -12,6 +12,7 @@
     <color name="splashBackground">#1A3C6E</color>
     <color name="splashTop">#FFFFFF</color>
     <color name="splashBottom">#F3F6FB</color>
+    <color name="splashProgressTrack">#1F1A3C6E</color>
     <color name="splashGold">#B8902F</color>
     <color name="splashGlowStart">#262F6FB5</color>
     <color name="splashGlowCenter">#0F2F6FB5</color>
