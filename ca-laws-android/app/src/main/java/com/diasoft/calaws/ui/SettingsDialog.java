@@ -37,7 +37,6 @@ public final class SettingsDialog {
                 activity.getString(fr ? R.string.source_url_fr : R.string.source_url_en));
         open(activity, view, R.id.linkLicence,
                 activity.getString(fr ? R.string.licence_url_fr : R.string.licence_url_en));
-        open(activity, view, R.id.linkOpenData, activity.getString(R.string.open_data_url));
 
         final String oldLang = Prefs.getLang(activity);
         langGroup.check("fr".equals(oldLang) ? R.id.langFr : R.id.langEn);

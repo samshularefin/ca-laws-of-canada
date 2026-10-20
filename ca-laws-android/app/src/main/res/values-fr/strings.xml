@@ -9,7 +9,6 @@
     <string name="about_disclaimer">Cette application n’est pas une application gouvernementale officielle et n’est ni affiliée au gouvernement du Canada ni approuvée par celui-ci. Les lois codifiées sont fournies à titre indicatif seulement et ne constituent pas un avis juridique; pour un usage officiel, consultez les sources officielles.</string>
     <string name="link_source">Source officielle : site Web de la législation</string>
     <string name="link_licence">Licence du gouvernement ouvert – Canada</string>
-    <string name="link_open_data">Données ouvertes (XML)</string>
     <string name="view_official">Voir sur le site Web de la législation ›</string>
     <string name="privacy_policy">Politique de confidentialité</string>
     <string name="ad_label">Annonce</string>
